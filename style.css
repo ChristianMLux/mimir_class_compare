@@ -1,0 +1,154 @@
+/* style.css */
+/* General body styling is handled by Tailwind utility classes in index.html */
+
+/* Language Buttons */
+.language-btn {
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-700;
+}
+.language-btn.active {
+    @apply bg-primary text-white hover:bg-blue-600;
+}
+
+/* Filter and Select Styling (Tailwind handles most of this via classes in HTML) */
+select {
+    @apply appearance-none; /* Remove default arrow for custom styling if needed */
+}
+
+/* Table Styling */
+#class-table th {
+    @apply select-none relative; /* For sort arrows */
+}
+
+#class-table th .sort-arrow {
+    @apply absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400;
+}
+
+
+/* Rating Bars */
+.rating {
+    @apply flex items-center;
+}
+.rating-bar {
+    @apply h-3 rounded-sm mr-2 transition-all duration-300 ease-in-out;
+    min-width: 4px; /* Ensure even small ratings are visible */
+}
+.rating-bar.weak { @apply bg-danger; }
+.rating-bar.medium { @apply bg-warning; }
+.rating-bar.strong { @apply bg-secondary; }
+.rating-bar.very-strong { @apply bg-info; }
+.rating span {
+    @apply text-xs font-medium text-gray-700;
+}
+
+/* Top Class Row Highlight */
+.top-class-row {
+    @apply bg-green-50 font-semibold;
+}
+.top-class-row td:first-child {
+    @apply text-secondary;
+}
+
+
+/* Clickable Class Name in Table */
+td.class-name-clickable {
+    @apply cursor-pointer text-primary hover:text-blue-700 hover:underline font-medium;
+}
+
+/* Category Text in Table */
+td.category-text { /* Example if you want specific styling not covered by Tailwind */
+    @apply font-semibold text-gray-600;
+}
+
+
+/* Modal Specific Styling */
+.modal-content {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+.modal-content::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+}
+
+#modal-class-ratings .rating-item {
+    @apply bg-gray-50 p-3 rounded-md shadow-sm;
+}
+#modal-class-ratings .rating-item strong {
+    @apply block text-sm font-medium text-dark mb-1;
+}
+
+#modal-skill-changes-list .skill-item {
+    @apply bg-white p-3 rounded-md border border-gray-200 shadow-sm;
+}
+#modal-skill-changes-list .skill-item strong {
+    @apply text-md font-semibold text-dark;
+}
+#modal-skill-changes-list .skill-type {
+    @apply text-xs italic text-gray-500 ml-2;
+}
+#modal-skill-changes-list .new-skill-highlight {
+    @apply inline-block bg-secondary text-white text-xs font-bold px-2 py-0.5 rounded-full ml-2 align-middle;
+}
+#modal-skill-changes-list .changed-skill-highlight { /* If you add a 'changed' highlight */
+    @apply inline-block bg-warning text-white text-xs font-bold px-2 py-0.5 rounded-full ml-2 align-middle;
+}
+#modal-skill-changes-list .skill-changes-list {
+    @apply list-disc list-inside text-sm text-gray-600 mt-1 pl-4 space-y-0.5;
+}
+#modal-skill-changes-list .skill-changes-list li::marker {
+    @apply text-primary;
+}
+
+
+/* Compatibility Info & Combo Results */
+.compatibility-message-container.warning {
+    @apply bg-red-50 border-l-4 border-danger text-red-700;
+}
+.compatibility-message-container.info {
+    @apply bg-blue-50 border-l-4 border-primary text-blue-700;
+}
+.compatibility-alternatives ul {
+    @apply list-disc list-inside pl-4 mt-1;
+}
+
+.combo-results .combo-recommendation-display {
+    @apply bg-white p-4 rounded-lg shadow-md border border-gray-200;
+}
+.combo-results .combo-recommendation-display h4 {
+    @apply text-lg font-semibold text-primary mb-2 flex items-center;
+}
+.combo-results .combo-recommendation-display h4 span { /* "Perfect Match" etc. */
+    @apply ml-2 text-xs bg-secondary text-white font-bold px-2 py-0.5 rounded-full;
+}
+.combo-results .combo-recommendation-display p {
+    @apply text-sm text-gray-600 mb-1;
+}
+.combo-results .combo-recommendation-display ul {
+    @apply list-disc list-inside text-sm text-gray-600 mt-1 pl-5 space-y-0.5;
+}
+
+/* Top Category Recommendations Styling */
+#top-category-recommendations-content .recommended-class-item {
+    @apply bg-white p-4 rounded-lg shadow border border-gray-200 hover:shadow-lg transition-shadow;
+}
+#top-category-recommendations-content .recommended-class-item h3 {
+    @apply text-md font-semibold text-primary mb-1;
+}
+#top-category-recommendations-content .recommended-class-item p {
+    @apply text-sm text-gray-600;
+}
+#top-category-recommendations-content .recommended-class-item strong {
+    @apply font-medium text-dark;
+}
+
+/* Responsive adjustments (Tailwind handles most, but this can be for fine-tuning) */
+@media (max-width: 768px) {
+    #main-title {
+        @apply text-2xl;
+    }
+    .controls {
+        @apply grid-cols-1 sm:grid-cols-2; /* Ensure it stacks well on smaller screens */
+    }
+    .filter-group {
+        @apply mb-2; /* Add some space when stacked */
+    }
+}
