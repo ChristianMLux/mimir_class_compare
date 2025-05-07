@@ -208,6 +208,100 @@
             border-top: 1px solid #ddd;
         }
         
+        .combo-selector {
+            background-color: var(--light);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .combo-selector h3 {
+            margin-top: 0;
+            color: var(--dark);
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .combo-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            align-items: flex-end;
+            margin-bottom: 20px;
+        }
+        
+        .combo-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 200px;
+        }
+        
+        .combo-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .find-combo-btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .find-combo-btn:hover {
+            background-color: #27ae60;
+        }
+        
+        .combo-results {
+            display: none; /* Initially hidden */
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .combo-results.active {
+            display: block;
+        }
+        
+        .combo-recommendation {
+            margin-bottom: 25px;
+        }
+        
+        .combo-recommendation h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .combo-recommendation h4 span {
+            background-color: var(--light);
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 0.9em;
+            color: var(--dark);
+        }
+        
+        .combo-recommendation p {
+            margin-bottom: 10px;
+        }
+        
+        .combo-recommendation ul {
+            margin-top: 5px;
+            padding-left: 20px;
+        }
+        
+        .combo-recommendation li {
+            margin-bottom: 5px;
+        }
+        
         @media (max-width: 768px) {
             .controls {
                 flex-direction: column;
@@ -216,6 +310,15 @@
             
             .filter-group {
                 flex-wrap: wrap;
+            }
+            
+            .combo-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .combo-group {
+                width: 100%;
             }
         }
     </style>
@@ -228,6 +331,37 @@
             <button class="language-btn active" data-lang="de">Deutsch</button>
             <button class="language-btn" data-lang="en">English</button>
             <button class="language-btn" data-lang="es">Español</button>
+        </div>
+        
+        <div class="combo-selector">
+            <h3 id="combo-title">Klassen-Kombination finden</h3>
+            <div class="combo-container">
+                <div class="combo-group">
+                    <label for="category1" id="category1-label">Erste Kategorie:</label>
+                    <select id="category1">
+                        <option value="Damage Dealers" id="cat1-damage-dealers">Damage Dealers</option>
+                        <option value="Tanks" id="cat1-tanks">Tanks</option>
+                        <option value="Healers" id="cat1-healers">Healers</option>
+                        <option value="Enchanters" id="cat1-enchanters">Enchanters</option>
+                    </select>
+                </div>
+                
+                <div class="combo-group">
+                    <label for="category2" id="category2-label">Zweite Kategorie:</label>
+                    <select id="category2">
+                        <option value="Damage Dealers" id="cat2-damage-dealers">Damage Dealers</option>
+                        <option value="Tanks" selected id="cat2-tanks">Tanks</option>
+                        <option value="Healers" id="cat2-healers">Healers</option>
+                        <option value="Enchanters" id="cat2-enchanters">Enchanters</option>
+                    </select>
+                </div>
+                
+                <button id="find-combo" class="find-combo-btn">Kombinationen finden</button>
+            </div>
+            
+            <div id="combo-results" class="combo-results">
+                <!-- Ergebnisse werden hier angezeigt -->
+            </div>
         </div>
         
         <div class="controls">
@@ -350,6 +484,199 @@
                 allClasses: "Alle Klassen",
                 topClasses: "Top 5 Klassen",
                 
+                // Kombinations-Finder
+                comboTitle: "Klassen-Kombination finden",
+                category1Label: "Erste Kategorie:",
+                category2Label: "Zweite Kategorie:",
+                findComboBtn: "Kombinationen finden",
+                perfectMatch: "Ideale Kombination",
+                
+                // Kombinationsergebnisse
+                comboDamageDealer: {
+                    damageDealer: {
+                        title: "Damage Dealer + Damage Dealer",
+                        class1: "Mystic Muse",
+                        class2: "Ghost Sentinel",
+                        description: "Diese Kombination bietet maximalen Schadensausstoß aus verschiedenen Quellen (magisch und physisch).",
+                        strengths: [
+                            "Hervorragende AoE- und Einzelziel-Schadensfähigkeiten",
+                            "Ausgezeichnete Reichweite und Mobilität",
+                            "Gute Versatilität durch unterschiedliche Schadenstypen"
+                        ]
+                    },
+                    tanks: {
+                        title: "Damage Dealer + Tank",
+                        class1: "Mystic Muse",
+                        class2: "Titan",
+                        description: "Die klassische Kombination aus Fernkampf-DPS und robustem Frontline-Tank.",
+                        strengths: [
+                            "Gute Balance zwischen Schaden und Überleben",
+                            "Tank kann Gegner binden, während DPS sicher angreifen kann",
+                            "Vielseitig für PvE und PvP geeignet"
+                        ]
+                    },
+                    healers: {
+                        title: "Damage Dealer + Heiler",
+                        class1: "Soultaker",
+                        class2: "Eva's Saint",
+                        description: "Hervorragend für längeres Überleben und Selbstversorgung.",
+                        strengths: [
+                            "Hohe Überlebensfähigkeit durch Heilung",
+                            "Guter Mix aus offensiven und defensiven Fähigkeiten",
+                            "Starke Wiederbelebungsfähigkeiten für Gruppensituationen"
+                        ]
+                    },
+                    enchanters: {
+                        title: "Damage Dealer + Enchanter",
+                        class1: "Ghost Sentinel",
+                        class2: "Sword Muse",
+                        description: "Verstärkt DPS durch Buffs und bietet zusätzliche Gruppennützlichkeit.",
+                        strengths: [
+                            "Signifikante DPS-Steigerung durch Enchanter-Buffs",
+                            "Gute Kombination aus Fernkampf-Schaden und Support",
+                            "Vielseitig mit verschiedenen Kontrolleffekten"
+                        ]
+                    }
+                },
+                comboTanks: {
+                    damageDealer: {
+                        title: "Tank + Damage Dealer",
+                        class1: "Phoenix Knight",
+                        class2: "Mystic Muse",
+                        description: "Robuster Tank mit hochwertigem Fernkampf-Schaden.",
+                        strengths: [
+                            "Hohe Überlebensfähigkeit durch Tank-Fähigkeiten",
+                            "Guter Schadensausstoß vom Damage Dealer",
+                            "Tank kann Gegner festhalten, während DPS sicher angreifen kann"
+                        ]
+                    },
+                    tanks: {
+                        title: "Tank + Tank",
+                        class1: "Phoenix Knight",
+                        class2: "Titan",
+                        description: "Extrem robuste Kombination für schwierige Herausforderungen.",
+                        strengths: [
+                            "Überragende Überlebensfähigkeit und Defensive",
+                            "Verschiedene Schutzfähigkeiten ergänzen sich",
+                            "Kann auch in den schwierigsten Situationen überleben"
+                        ]
+                    },
+                    healers: {
+                        title: "Tank + Heiler",
+                        class1: "Phoenix Knight",
+                        class2: "Eva's Saint",
+                        description: "Klassische MMO-Kombination mit nahezu unaufhaltsamer Überlebensfähigkeit.",
+                        strengths: [
+                            "Extrem hohe Überlebensfähigkeit",
+                            "Perfekte Balance aus Schutz und Heilung",
+                            "Gute Wahl für schwierigen Content"
+                        ]
+                    },
+                    enchanters: {
+                        title: "Tank + Enchanter",
+                        class1: "Titan",
+                        class2: "Hierophant",
+                        description: "Verstärkter Tank mit Gruppenunterstützung.",
+                        strengths: [
+                            "Tank erhält wertvolle Verstärkungszauber",
+                            "Kombination bietet gute Gruppennützlichkeit",
+                            "Ausgewogenes Verhältnis zwischen Defensive und Support"
+                        ]
+                    }
+                },
+                comboHealers: {
+                    damageDealer: {
+                        title: "Heiler + Damage Dealer",
+                        class1: "Eva's Saint",
+                        class2: "Storm Screamer",
+                        description: "Gute Heilung kombiniert mit starkem magischen Schaden.",
+                        strengths: [
+                            "Gute Balance zwischen Heilung und Schaden",
+                            "Hohe Versatilität in verschiedenen Situationen",
+                            "Starke Wiederbelebungsfähigkeiten für Gruppensituationen"
+                        ]
+                    },
+                    tanks: {
+                        title: "Heiler + Tank",
+                        class1: "Eva's Saint",
+                        class2: "Phoenix Knight",
+                        description: "Klassisches Duo für Überleben in jeder Situation.",
+                        strengths: [
+                            "Maximale Überlebensfähigkeit",
+                            "Tank schützt den Heiler, während der Heiler den Tank am Leben hält",
+                            "Perfekt für schwierigen Content"
+                        ]
+                    },
+                    healers: {
+                        title: "Heiler + Heiler",
+                        class1: "Eva's Saint",
+                        class2: "Shillien Saint",
+                        description: "Unübertroffene Heilung und Support mit verschiedenen Heilstilen.",
+                        strengths: [
+                            "Unübertroffene Heilfähigkeit",
+                            "Verschiedene Heilstile ergänzen sich",
+                            "Nicht empfohlen für normales Spiel, aber nützlich für spezielle Herausforderungen"
+                        ]
+                    },
+                    enchanters: {
+                        title: "Heiler + Enchanter",
+                        class1: "Eva's Saint",
+                        class2: "Hierophant",
+                        description: "Maximaler Support mit Heilung und Buffs.",
+                        strengths: [
+                            "Hervorragende Unterstützungsfähigkeiten",
+                            "Perfekte Synergie zwischen Heilung und Buffs",
+                            "Ideal für Gruppenspiel"
+                        ]
+                    }
+                },
+                comboEnchanters: {
+                    damageDealer: {
+                        title: "Enchanter + Damage Dealer",
+                        class1: "Hierophant",
+                        class2: "Mystic Muse",
+                        description: "Verstärkte magische Fähigkeiten für maximalen Schaden.",
+                        strengths: [
+                            "Buffs steigern die bereits starken Schadensfähigkeiten",
+                            "Gute Balance aus Support und Offensive",
+                            "Hohe Gruppennützlichkeit"
+                        ]
+                    },
+                    tanks: {
+                        title: "Enchanter + Tank",
+                        class1: "Sword Muse",
+                        class2: "Phoenix Knight",
+                        description: "Verstärkter Tank mit zusätzlichem Support.",
+                        strengths: [
+                            "Buffs machen den Tank noch widerstandsfähiger",
+                            "Bietet gute Gruppennützlichkeit",
+                            "Vielseitig für verschiedene Spielsituationen"
+                        ]
+                    },
+                    healers: {
+                        title: "Enchanter + Heiler",
+                        class1: "Hierophant",
+                        class2: "Eva's Saint",
+                        description: "Maximaler Support mit Buffs und Heilung.",
+                        strengths: [
+                            "Unübertroffene Unterstützungsfähigkeiten",
+                            "Perfekte Synergie zwischen Buffs und Heilung",
+                            "Ideal für Gruppenspiel"
+                        ]
+                    },
+                    enchanters: {
+                        title: "Enchanter + Enchanter",
+                        class1: "Hierophant",
+                        class2: "Sword Muse",
+                        description: "Verschiedene Buff-Stile für maximale Verstärkung.",
+                        strengths: [
+                            "Verschiedene Buff-Typen ergänzen sich",
+                            "Hervorragende Gruppennützlichkeit",
+                            "Wenig Schaden, aber exzellente Unterstützung für andere Spieler"
+                        ]
+                    }
+                },
+                
                 // Tabellenkopf
                 classHeader: "Klasse",
                 categoryHeader: "Kategorie",
@@ -439,6 +766,199 @@
                 allClasses: "All Classes",
                 topClasses: "Top 5 Classes",
                 
+                // Combination Finder
+                comboTitle: "Find Class Combination",
+                category1Label: "First Category:",
+                category2Label: "Second Category:",
+                findComboBtn: "Find Combinations",
+                perfectMatch: "Perfect Match",
+                
+                // Combination results
+                comboDamageDealer: {
+                    damageDealer: {
+                        title: "Damage Dealer + Damage Dealer",
+                        class1: "Mystic Muse",
+                        class2: "Ghost Sentinel",
+                        description: "This combination offers maximum damage output from different sources (magical and physical).",
+                        strengths: [
+                            "Excellent AoE and single target damage capabilities",
+                            "Outstanding range and mobility",
+                            "Good versatility through different damage types"
+                        ]
+                    },
+                    tanks: {
+                        title: "Damage Dealer + Tank",
+                        class1: "Mystic Muse",
+                        class2: "Titan",
+                        description: "The classic combination of ranged DPS and robust frontline tank.",
+                        strengths: [
+                            "Good balance between damage and survival",
+                            "Tank can hold enemies while DPS attacks safely",
+                            "Versatile for both PvE and PvP"
+                        ]
+                    },
+                    healers: {
+                        title: "Damage Dealer + Healer",
+                        class1: "Soultaker",
+                        class2: "Eva's Saint",
+                        description: "Excellent for longer survival and self-sufficiency.",
+                        strengths: [
+                            "High survivability through healing",
+                            "Good mix of offensive and defensive abilities",
+                            "Strong resurrection capabilities for group situations"
+                        ]
+                    },
+                    enchanters: {
+                        title: "Damage Dealer + Enchanter",
+                        class1: "Ghost Sentinel",
+                        class2: "Sword Muse",
+                        description: "Enhances DPS through buffs and provides additional group utility.",
+                        strengths: [
+                            "Significant DPS increase through enchanter buffs",
+                            "Good combination of ranged damage and support",
+                            "Versatile with various control effects"
+                        ]
+                    }
+                },
+                comboTanks: {
+                    damageDealer: {
+                        title: "Tank + Damage Dealer",
+                        class1: "Phoenix Knight",
+                        class2: "Mystic Muse",
+                        description: "Robust tank with high-quality ranged damage.",
+                        strengths: [
+                            "High survivability through tank abilities",
+                            "Good damage output from damage dealer",
+                            "Tank can hold enemies while DPS attacks safely"
+                        ]
+                    },
+                    tanks: {
+                        title: "Tank + Tank",
+                        class1: "Phoenix Knight",
+                        class2: "Titan",
+                        description: "Extremely robust combination for difficult challenges.",
+                        strengths: [
+                            "Outstanding survivability and defense",
+                            "Various protection abilities complement each other",
+                            "Can survive even in the most difficult situations"
+                        ]
+                    },
+                    healers: {
+                        title: "Tank + Healer",
+                        class1: "Phoenix Knight",
+                        class2: "Eva's Saint",
+                        description: "Classic MMO combination with nearly unstoppable survivability.",
+                        strengths: [
+                            "Extremely high survivability",
+                            "Perfect balance of protection and healing",
+                            "Good choice for difficult content"
+                        ]
+                    },
+                    enchanters: {
+                        title: "Tank + Enchanter",
+                        class1: "Titan",
+                        class2: "Hierophant",
+                        description: "Enhanced tank with group support.",
+                        strengths: [
+                            "Tank receives valuable enhancement spells",
+                            "Combination offers good group utility",
+                            "Balanced ratio between defense and support"
+                        ]
+                    }
+                },
+                comboHealers: {
+                    damageDealer: {
+                        title: "Healer + Damage Dealer",
+                        class1: "Eva's Saint",
+                        class2: "Storm Screamer",
+                        description: "Good healing combined with strong magical damage.",
+                        strengths: [
+                            "Good balance between healing and damage",
+                            "High versatility in various situations",
+                            "Strong resurrection abilities for group situations"
+                        ]
+                    },
+                    tanks: {
+                        title: "Healer + Tank",
+                        class1: "Eva's Saint",
+                        class2: "Phoenix Knight",
+                        description: "Classic duo for survival in any situation.",
+                        strengths: [
+                            "Maximum survivability",
+                            "Tank protects the healer while the healer keeps the tank alive",
+                            "Perfect for difficult content"
+                        ]
+                    },
+                    healers: {
+                        title: "Healer + Healer",
+                        class1: "Eva's Saint",
+                        class2: "Shillien Saint",
+                        description: "Unmatched healing and support with different healing styles.",
+                        strengths: [
+                            "Unmatched healing ability",
+                            "Different healing styles complement each other",
+                            "Not recommended for normal play, but useful for special challenges"
+                        ]
+                    },
+                    enchanters: {
+                        title: "Healer + Enchanter",
+                        class1: "Eva's Saint",
+                        class2: "Hierophant",
+                        description: "Maximum support with healing and buffs.",
+                        strengths: [
+                            "Excellent support capabilities",
+                            "Perfect synergy between healing and buffs",
+                            "Ideal for group play"
+                        ]
+                    }
+                },
+                comboEnchanters: {
+                    damageDealer: {
+                        title: "Enchanter + Damage Dealer",
+                        class1: "Hierophant",
+                        class2: "Mystic Muse",
+                        description: "Enhanced magical abilities for maximum damage.",
+                        strengths: [
+                            "Buffs increase already strong damage abilities",
+                            "Good balance of support and offense",
+                            "High group utility"
+                        ]
+                    },
+                    tanks: {
+                        title: "Enchanter + Tank",
+                        class1: "Sword Muse",
+                        class2: "Phoenix Knight",
+                        description: "Enhanced tank with additional support.",
+                        strengths: [
+                            "Buffs make the tank even more resilient",
+                            "Provides good group utility",
+                            "Versatile for various game situations"
+                        ]
+                    },
+                    healers: {
+                        title: "Enchanter + Healer",
+                        class1: "Hierophant",
+                        class2: "Eva's Saint",
+                        description: "Maximum support with buffs and healing.",
+                        strengths: [
+                            "Unmatched support capabilities",
+                            "Perfect synergy between buffs and healing",
+                            "Ideal for group play"
+                        ]
+                    },
+                    enchanters: {
+                        title: "Enchanter + Enchanter",
+                        class1: "Hierophant",
+                        class2: "Sword Muse",
+                        description: "Different buff styles for maximum enhancement.",
+                        strengths: [
+                            "Different buff types complement each other",
+                            "Excellent group utility",
+                            "Little damage, but excellent support for other players"
+                        ]
+                    }
+                },
+                
                 // Table headers
                 classHeader: "Class",
                 categoryHeader: "Category",
@@ -527,6 +1047,199 @@
                 showLabel: "Mostrar:",
                 allClasses: "Todas las Clases",
                 topClasses: "Top 5 Clases",
+                
+                // Buscador de combinaciones
+                comboTitle: "Encontrar Combinación de Clases",
+                category1Label: "Primera Categoría:",
+                category2Label: "Segunda Categoría:",
+                findComboBtn: "Encontrar Combinaciones",
+                perfectMatch: "Combinación Perfecta",
+                
+                // Resultados de combinaciones
+                comboDamageDealer: {
+                    damageDealer: {
+                        title: "Daño + Daño",
+                        class1: "Mystic Muse",
+                        class2: "Ghost Sentinel",
+                        description: "Esta combinación ofrece máximo daño desde diferentes fuentes (mágico y físico).",
+                        strengths: [
+                            "Excelentes capacidades de daño AoE y objetivo único",
+                            "Destacado alcance y movilidad",
+                            "Buena versatilidad a través de diferentes tipos de daño"
+                        ]
+                    },
+                    tanks: {
+                        title: "Daño + Tanque",
+                        class1: "Mystic Muse",
+                        class2: "Titan",
+                        description: "La combinación clásica de DPS a distancia y tanque robusto en primera línea.",
+                        strengths: [
+                            "Buen equilibrio entre daño y supervivencia",
+                            "El tanque puede mantener a los enemigos mientras el DPS ataca de forma segura",
+                            "Versátil tanto para PvE como PvP"
+                        ]
+                    },
+                    healers: {
+                        title: "Daño + Sanador",
+                        class1: "Soultaker",
+                        class2: "Eva's Saint",
+                        description: "Excelente para supervivencia prolongada y autosuficiencia.",
+                        strengths: [
+                            "Alta supervivencia gracias a la curación",
+                            "Buena mezcla de habilidades ofensivas y defensivas",
+                            "Fuertes capacidades de resurrección para situaciones de grupo"
+                        ]
+                    },
+                    enchanters: {
+                        title: "Daño + Encantador",
+                        class1: "Ghost Sentinel",
+                        class2: "Sword Muse",
+                        description: "Mejora el DPS a través de buffs y proporciona utilidad de grupo adicional.",
+                        strengths: [
+                            "Aumento significativo de DPS a través de buffs del encantador",
+                            "Buena combinación de daño a distancia y apoyo",
+                            "Versátil con varios efectos de control"
+                        ]
+                    }
+                },
+                comboTanks: {
+                    damageDealer: {
+                        title: "Tanque + Daño",
+                        class1: "Phoenix Knight",
+                        class2: "Mystic Muse",
+                        description: "Tanque robusto con daño a distancia de alta calidad.",
+                        strengths: [
+                            "Alta supervivencia a través de las habilidades del tanque",
+                            "Buena producción de daño del especialista en daño",
+                            "El tanque puede contener a los enemigos mientras el DPS ataca con seguridad"
+                        ]
+                    },
+                    tanks: {
+                        title: "Tanque + Tanque",
+                        class1: "Phoenix Knight",
+                        class2: "Titan",
+                        description: "Combinación extremadamente robusta para desafíos difíciles.",
+                        strengths: [
+                            "Supervivencia y defensa sobresalientes",
+                            "Varias habilidades de protección se complementan entre sí",
+                            "Puede sobrevivir incluso en las situaciones más difíciles"
+                        ]
+                    },
+                    healers: {
+                        title: "Tanque + Sanador",
+                        class1: "Phoenix Knight",
+                        class2: "Eva's Saint",
+                        description: "Combinación clásica de MMO con supervivencia casi imparable.",
+                        strengths: [
+                            "Supervivencia extremadamente alta",
+                            "Equilibrio perfecto entre protección y curación",
+                            "Buena elección para contenido difícil"
+                        ]
+                    },
+                    enchanters: {
+                        title: "Tanque + Encantador",
+                        class1: "Titan",
+                        class2: "Hierophant",
+                        description: "Tanque mejorado con apoyo de grupo.",
+                        strengths: [
+                            "El tanque recibe valiosos hechizos de mejora",
+                            "La combinación ofrece buena utilidad de grupo",
+                            "Relación equilibrada entre defensa y apoyo"
+                        ]
+                    }
+                },
+                comboHealers: {
+                    damageDealer: {
+                        title: "Sanador + Daño",
+                        class1: "Eva's Saint",
+                        class2: "Storm Screamer",
+                        description: "Buena curación combinada con fuerte daño mágico.",
+                        strengths: [
+                            "Buen equilibrio entre curación y daño",
+                            "Alta versatilidad en diversas situaciones",
+                            "Fuertes habilidades de resurrección para situaciones de grupo"
+                        ]
+                    },
+                    tanks: {
+                        title: "Sanador + Tanque",
+                        class1: "Eva's Saint",
+                        class2: "Phoenix Knight",
+                        description: "Dúo clásico para supervivencia en cualquier situación.",
+                        strengths: [
+                            "Máxima supervivencia",
+                            "El tanque protege al sanador mientras el sanador mantiene vivo al tanque",
+                            "Perfecto para contenido difícil"
+                        ]
+                    },
+                    healers: {
+                        title: "Sanador + Sanador",
+                        class1: "Eva's Saint",
+                        class2: "Shillien Saint",
+                        description: "Curación y apoyo inigualables con diferentes estilos de curación.",
+                        strengths: [
+                            "Capacidad de curación incomparable",
+                            "Diferentes estilos de curación se complementan entre sí",
+                            "No recomendado para juego normal, pero útil para desafíos especiales"
+                        ]
+                    },
+                    enchanters: {
+                        title: "Sanador + Encantador",
+                        class1: "Eva's Saint",
+                        class2: "Hierophant",
+                        description: "Máximo apoyo con curación y buffs.",
+                        strengths: [
+                            "Excelentes capacidades de apoyo",
+                            "Perfecta sinergia entre curación y buffs",
+                            "Ideal para juego en grupo"
+                        ]
+                    }
+                },
+                comboEnchanters: {
+                    damageDealer: {
+                        title: "Encantador + Daño",
+                        class1: "Hierophant",
+                        class2: "Mystic Muse",
+                        description: "Habilidades mágicas mejoradas para máximo daño.",
+                        strengths: [
+                            "Los buffs aumentan las ya fuertes habilidades de daño",
+                            "Buen equilibrio entre apoyo y ofensiva",
+                            "Alta utilidad de grupo"
+                        ]
+                    },
+                    tanks: {
+                        title: "Encantador + Tanque",
+                        class1: "Sword Muse",
+                        class2: "Phoenix Knight",
+                        description: "Tanque mejorado con apoyo adicional.",
+                        strengths: [
+                            "Los buffs hacen que el tanque sea aún más resistente",
+                            "Proporciona buena utilidad de grupo",
+                            "Versátil para diversas situaciones de juego"
+                        ]
+                    },
+                    healers: {
+                        title: "Encantador + Sanador",
+                        class1: "Hierophant",
+                        class2: "Eva's Saint",
+                        description: "Máximo apoyo con buffs y curación.",
+                        strengths: [
+                            "Capacidades de apoyo inigualables",
+                            "Perfecta sinergia entre buffs y curación",
+                            "Ideal para juego en grupo"
+                        ]
+                    },
+                    enchanters: {
+                        title: "Encantador + Encantador",
+                        class1: "Hierophant",
+                        class2: "Sword Muse",
+                        description: "Diferentes estilos de buff para máxima mejora.",
+                        strengths: [
+                            "Diferentes tipos de buff se complementan entre sí",
+                            "Excelente utilidad de grupo",
+                            "Poco daño, pero excelente apoyo para otros jugadores"
+                        ]
+                    }
+                },
                 
                 // Encabezados de tabla
                 classHeader: "Clase",
@@ -930,6 +1643,10 @@
             const sortOrderBtn = document.getElementById('sort-order');
             const showTopSelect = document.getElementById('show-top');
             const languageBtns = document.querySelectorAll('.language-btn');
+            const category1Select = document.getElementById('category1');
+            const category2Select = document.getElementById('category2');
+            const findComboBtn = document.getElementById('find-combo');
+            const comboResults = document.getElementById('combo-results');
             
             let sortAscending = false;
             let currentSortBy = 'overall';
@@ -938,6 +1655,116 @@
             // Initialer Tabellen-Render und Spracheinstellung
             setLanguage('de');
             renderTable();
+            
+            // Event Listener für Kombinations-Finder
+            findComboBtn.addEventListener('click', function() {
+                const cat1 = category1Select.value;
+                const cat2 = category2Select.value;
+                
+                // Kombinationsergebnisse anzeigen
+                showCombination(cat1, cat2);
+            });
+            
+            // Funktion zum Anzeigen der Klassen-Kombinationen
+function showCombination(category1, category2) {
+    // Kombinationsdaten direkt zugreifen
+    let comboData;
+    
+    // Einfachere Logik für den Zugriff auf die Kombinationsdaten
+    if (category1 === 'Damage Dealers') {
+        if (category2 === 'Damage Dealers') {
+            comboData = translations[currentLanguage].comboDamageDealer.damageDealer;
+        } else if (category2 === 'Tanks') {
+            comboData = translations[currentLanguage].comboDamageDealer.tanks;
+        } else if (category2 === 'Healers') {
+            comboData = translations[currentLanguage].comboDamageDealer.healers;
+        } else if (category2 === 'Enchanters') {
+            comboData = translations[currentLanguage].comboDamageDealer.enchanters;
+        }
+    } else if (category1 === 'Tanks') {
+        if (category2 === 'Damage Dealers') {
+            comboData = translations[currentLanguage].comboTanks.damageDealer;
+        } else if (category2 === 'Tanks') {
+            comboData = translations[currentLanguage].comboTanks.tanks;
+        } else if (category2 === 'Healers') {
+            comboData = translations[currentLanguage].comboTanks.healers;
+        } else if (category2 === 'Enchanters') {
+            comboData = translations[currentLanguage].comboTanks.enchanters;
+        }
+    } else if (category1 === 'Healers') {
+        if (category2 === 'Damage Dealers') {
+            comboData = translations[currentLanguage].comboHealers.damageDealer;
+        } else if (category2 === 'Tanks') {
+            comboData = translations[currentLanguage].comboHealers.tanks;
+        } else if (category2 === 'Healers') {
+            comboData = translations[currentLanguage].comboHealers.healers;
+        } else if (category2 === 'Enchanters') {
+            comboData = translations[currentLanguage].comboHealers.enchanters;
+        }
+    } else if (category1 === 'Enchanters') {
+        if (category2 === 'Damage Dealers') {
+            comboData = translations[currentLanguage].comboEnchanters.damageDealer;
+        } else if (category2 === 'Tanks') {
+            comboData = translations[currentLanguage].comboEnchanters.tanks;
+        } else if (category2 === 'Healers') {
+            comboData = translations[currentLanguage].comboEnchanters.healers;
+        } else if (category2 === 'Enchanters') {
+            comboData = translations[currentLanguage].comboEnchanters.enchanters;
+        }
+    }
+    
+    // Alternative, wenn es in der einen Richtung nicht funktioniert, in der anderen versuchen
+    if (!comboData && category1 !== category2) {
+        return showCombination(category2, category1);
+    }
+    
+    if (comboData) {
+        // HTML für das Ergebnis erstellen
+        let html = `
+            <div class="combo-recommendation">
+                <h4>${comboData.title} <span>${translations[currentLanguage].perfectMatch}</span></h4>
+                <p><strong>${comboData.class1}</strong> + <strong>${comboData.class2}</strong>: ${comboData.description}</p>
+                <p><strong>${currentLanguage === 'de' ? 'Stärken' : (currentLanguage === 'en' ? 'Strengths' : 'Fortalezas')}:</strong></p>
+                <ul>
+        `;
+        
+        // Stärken-Liste hinzufügen
+        comboData.strengths.forEach(strength => {
+            html += `<li>${strength}</li>`;
+        });
+        
+        html += `
+                </ul>
+            </div>
+        `;
+        
+        // Ergebnis in die Seite einfügen
+        comboResults.innerHTML = html;
+        comboResults.classList.add('active');
+        
+        // Die Tabelle auf die empfohlenen Klassen filtern
+        categoryFilter.value = 'all';
+        showTopSelect.value = 'all';
+        renderTable();
+        
+        // Scrollen zum Ergebnis
+        comboResults.scrollIntoView({ behavior: 'smooth' });
+    } else {
+        comboResults.innerHTML = `<p>${currentLanguage === 'de' ? 'Keine passende Kombination gefunden.' : (currentLanguage === 'en' ? 'No matching combination found.' : 'No se encontró una combinación adecuada.')}</p>`;
+        comboResults.classList.add('active');
+    }
+}
+            
+            // Hilfsfunktion, um den Kategorie-Key für Übersetzungs-Lookup zu erhalten
+            function getCategoryKey(category) {
+                switch(category) {
+                    case 'Damage Dealers': return 'DamageDealer';
+                    case 'Tanks': return 'Tanks';
+                    case 'Healers': return 'Healers';
+                    case 'Enchanters': return 'Enchanters';
+                    default: return '';
+                }
+            }
             
             // Event Listeners für Sprachauswahl
             languageBtns.forEach(btn => {
@@ -1008,6 +1835,20 @@
                 document.getElementById('show-label').textContent = translations[lang].showLabel;
                 document.getElementById('all-classes').textContent = translations[lang].allClasses;
                 document.getElementById('top-classes').textContent = translations[lang].topClasses;
+                
+                // Kombinationssuche
+                document.getElementById('combo-title').textContent = translations[lang].comboTitle;
+                document.getElementById('category1-label').textContent = translations[lang].category1Label;
+                document.getElementById('category2-label').textContent = translations[lang].category2Label;
+                document.getElementById('cat1-damage-dealers').textContent = translations[lang].damageDealer;
+                document.getElementById('cat1-tanks').textContent = translations[lang].tanks;
+                document.getElementById('cat1-healers').textContent = translations[lang].healers;
+                document.getElementById('cat1-enchanters').textContent = translations[lang].enchanters;
+                document.getElementById('cat2-damage-dealers').textContent = translations[lang].damageDealer;
+                document.getElementById('cat2-tanks').textContent = translations[lang].tanks;
+                document.getElementById('cat2-healers').textContent = translations[lang].healers;
+                document.getElementById('cat2-enchanters').textContent = translations[lang].enchanters;
+                document.getElementById('find-combo').textContent = translations[lang].findComboBtn;
                 
                 // Tabellenkopf
                 document.getElementById('class-header').textContent = translations[lang].classHeader;
