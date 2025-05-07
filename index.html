@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mimir Class Comparison</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --dark: #34495e;
+            --light: #ecf0f1;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --info: #1abc9c;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        
+        h1 {
+            color: var(--dark);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .language-selector {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        
+        .language-btn {
+            padding: 8px 15px;
+            background-color: var(--light);
+            border: 2px solid transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+        
+        .language-btn:hover {
+            background-color: #dde4e6;
+        }
+        
+        .language-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--light);
+            padding: 15px;
+            border-radius: 5px;
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        select, button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: var(--dark);
+            color: white;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        th:hover {
+            background-color: #2c3e50;
+        }
+        
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .rating {
+            display: flex;
+            align-items: center;
+        }
+        
+        .rating-bar {
+            height: 15px;
+            border-radius: 4px;
+            margin-right: 8px;
+        }
+        
+        .weak {
+            background-color: var(--danger);
+        }
+        
+        .medium {
+            background-color: var(--warning);
+        }
+        
+        .strong {
+            background-color: var(--secondary);
+        }
+        
+        .very-strong {
+            background-color: var(--info);
+        }
+        
+        .category {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .top-class {
+            font-weight: bold;
+            background-color: rgba(46, 204, 113, 0.2);
+        }
+        
+        .key-changes {
+            font-size: 0.9em;
+            margin-top: 5px;
+            color: #7f8c8d;
+        }
+        
+        .recommendations {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-left: 4px solid var(--primary);
+            border-radius: 4px;
+        }
+        
+        .recommendation-title {
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+        
+        .recommended-class {
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .recommended-class h3 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+        
+        .recommended-synergy {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-group {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="main-title">Mimir Klassenvergleich</h1>
+        
+        <div class="language-selector">
+            <button class="language-btn active" data-lang="de">Deutsch</button>
+            <button class="language-btn" data-lang="en">English</button>
+            <button class="language-btn" data-lang="es">Español</button>
+        </div>
+        
+        <div class="controls">
+            <div class="filter-group">
+                <label for="category-filter" id="category-label">Kategorie:</label>
+                <select id="category-filter">
+                    <option value="all" id="all-categories">Alle Kategorien</option>
+                    <option value="Damage Dealers" id="damage-dealers">Damage Dealers</option>
+                    <option value="Tanks" id="tanks">Tanks</option>
+                    <option value="Healers" id="healers">Healers</option>
+                    <option value="Enchanters" id="enchanters">Enchanters</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="sort-by" id="sort-label">Sortieren nach:</label>
+                <select id="sort-by">
+                    <option value="overall" id="overall-rating">Gesamtbewertung</option>
+                    <option value="dps" id="dps">DPS</option>
+                    <option value="survival" id="survival">Überlebensfähigkeit</option>
+                    <option value="utility" id="utility">Gruppennützlichkeit</option>
+                    <option value="mobility" id="mobility">Mobilität</option>
+                    <option value="ease" id="ease">Spielbarkeit</option>
+                </select>
+                <button id="sort-order">Absteigend</button>
+            </div>
+            
+            <div class="filter-group">
+                <label for="show-top" id="show-label">Anzeigen:</label>
+                <select id="show-top">
+                    <option value="all" id="all-classes">Alle Klassen</option>
+                    <option value="top" id="top-classes">Top 5 Klassen</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <table id="class-table">
+                <thead>
+                    <tr>
+                        <th data-sort="name" id="class-header">Klasse</th>
+                        <th data-sort="category" id="category-header">Kategorie</th>
+                        <th data-sort="dps" id="dps-header">DPS</th>
+                        <th data-sort="survival" id="survival-header">Überlebensfähigkeit</th>
+                        <th data-sort="utility" id="utility-header">Gruppennützlichkeit</th>
+                        <th data-sort="mobility" id="mobility-header">Mobilität</th>
+                        <th data-sort="ease" id="ease-header">Spielbarkeit</th>
+                        <th data-sort="overall" id="overall-header">Gesamtbewertung</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Daten werden per JavaScript eingefügt -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="recommendations">
+            <h2 class="recommendation-title" id="recommendations-title">Top-Empfehlungen</h2>
+            
+            <div class="recommended-class">
+                <h3 id="rec1-title">1. Mystic Muse (Wizard)</h3>
+                <p><strong id="strengths-label1">Stärken:</strong> <span id="strengths1">Hervorragender magischer Schadensaustoß, verbesserte kritische Trefferchance und -schaden, reduzierte Castingzeiten</span></p>
+                <p><strong id="key-changes-label1">Schlüsseländerungen:</strong></p>
+                <ul id="changes-list1">
+                    <li>Stark verbesserte M.Atk Boni (bis zu +1500) durch Higher Mana Gain</li>
+                    <li>Neue Skills wie Magic Charge (Mobilität) und Wizard Enlightment (temporäre Stärkung)</li>
+                    <li>Wizard Enlightment bietet +20% M.Atk, +30% Casting Speed, +50% Critical Rate für 20 Sekunden</li>
+                    <li>Reduzierte Castingzeiten für Hauptschadensskills wie Prominence</li>
+                </ul>
+            </div>
+            
+            <div class="recommended-class">
+                <h3 id="rec2-title">2. Titan (Warrior)</h3>
+                <p><strong id="strengths-label2">Stärken:</strong> <span id="strengths2">Ausgezeichnete Balance zwischen Offensive und Defensive, gute Überlebensfähigkeit, solider Schadensaustoß</span></p>
+                <p><strong id="key-changes-label2">Schlüsseländerungen:</strong></p>
+                <ul id="changes-list2">
+                    <li>Neuer passiver Skill "Fanatic" (+30% Atk.Spd, +15% P.Skill Critical Rate/Damage)</li>
+                    <li>Verbesserte "Heavy Armor Mastery" mit Schutz gegen kritische Treffer</li>
+                    <li>Neue Fähigkeit "Titanic Sweep" mit bis zu 20 Zielen</li>
+                    <li>Verbesserte AoE-Fähigkeiten und Schockeffekte</li>
+                </ul>
+            </div>
+            
+            <div class="recommended-synergy">
+                <h3 id="synergy-title">Warum diese Kombination?</h3>
+                <p id="synergy-intro">Die Kombination aus Mystic Muse und Titan bietet eine perfekte Balance für nahezu alle Spielinhalte:</p>
+                <ul id="synergy-list">
+                    <li>Mystic Muse liefert konstanten, hohen magischen Schaden aus der Ferne</li>
+                    <li>Titan bietet Frontline-Präsenz mit guter Überlebensfähigkeit und Crowd-Control</li>
+                    <li>Beide Klassen verfügen über starke AoE-Fähigkeiten für Gruppen von Gegnern</li>
+                    <li>Verbesserte Mobilität durch neue Skills auf beiden Klassen</li>
+                    <li>Durch unterschiedliche Schadenstypen (magisch/physisch) Vielseitigkeit gegen verschiedene Gegnertypen</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Übersetzungen
+        const translations = {
+            de: {
+                // Haupttitel und UI-Elemente
+                mainTitle: "Mimir Klassenvergleich",
+                categoryLabel: "Kategorie:",
+                allCategories: "Alle Kategorien",
+                damageDealer: "Damage Dealers",
+                tanks: "Tanks",
+                healers: "Heiler",
+                enchanters: "Verzauberer",
+                sortLabel: "Sortieren nach:",
+                overallRating: "Gesamtbewertung",
+                dps: "DPS",
+                survival: "Überlebensfähigkeit",
+                utility: "Gruppennützlichkeit",
+                mobility: "Mobilität",
+                ease: "Spielbarkeit",
+                sortAscending: "Aufsteigend",
+                sortDescending: "Absteigend",
+                showLabel: "Anzeigen:",
+                allClasses: "Alle Klassen",
+                topClasses: "Top 5 Klassen",
+                
+                // Tabellenkopf
+                classHeader: "Klasse",
+                categoryHeader: "Kategorie",
+                dpsHeader: "DPS",
+                survivalHeader: "Überlebensfähigkeit",
+                utilityHeader: "Gruppennützlichkeit",
+                mobilityHeader: "Mobilität",
+                easeHeader: "Spielbarkeit",
+                overallHeader: "Gesamtbewertung",
+                
+                // Empfehlungen
+                recommendationsTitle: "Top-Empfehlungen",
+                rec1Title: "1. Mystic Muse (Wizard)",
+                strengthsLabel1: "Stärken:",
+                strengths1: "Hervorragender magischer Schadensaustoß, verbesserte kritische Trefferchance und -schaden, reduzierte Castingzeiten",
+                keyChangesLabel1: "Schlüsseländerungen:",
+                changesList1: [
+                    "Stark verbesserte M.Atk Boni (bis zu +1500) durch Higher Mana Gain",
+                    "Neue Skills wie Magic Charge (Mobilität) und Wizard Enlightment (temporäre Stärkung)",
+                    "Wizard Enlightment bietet +20% M.Atk, +30% Casting Speed, +50% Critical Rate für 20 Sekunden",
+                    "Reduzierte Castingzeiten für Hauptschadensskills wie Prominence"
+                ],
+                
+                rec2Title: "2. Titan (Warrior)",
+                strengthsLabel2: "Stärken:",
+                strengths2: "Ausgezeichnete Balance zwischen Offensive und Defensive, gute Überlebensfähigkeit, solider Schadensaustoß",
+                keyChangesLabel2: "Schlüsseländerungen:",
+                changesList2: [
+                    "Neuer passiver Skill \"Fanatic\" (+30% Atk.Spd, +15% P.Skill Critical Rate/Damage)",
+                    "Verbesserte \"Heavy Armor Mastery\" mit Schutz gegen kritische Treffer",
+                    "Neue Fähigkeit \"Titanic Sweep\" mit bis zu 20 Zielen",
+                    "Verbesserte AoE-Fähigkeiten und Schockeffekte"
+                ],
+                
+                synergyTitle: "Warum diese Kombination?",
+                synergyIntro: "Die Kombination aus Mystic Muse und Titan bietet eine perfekte Balance für nahezu alle Spielinhalte:",
+                synergyList: [
+                    "Mystic Muse liefert konstanten, hohen magischen Schaden aus der Ferne",
+                    "Titan bietet Frontline-Präsenz mit guter Überlebensfähigkeit und Crowd-Control",
+                    "Beide Klassen verfügen über starke AoE-Fähigkeiten für Gruppen von Gegnern",
+                    "Verbesserte Mobilität durch neue Skills auf beiden Klassen",
+                    "Durch unterschiedliche Schadenstypen (magisch/physisch) Vielseitigkeit gegen verschiedene Gegnertypen"
+                ],
+                
+                // Klassenspezifische Änderungen
+                keyChangesMysticMuse: "Higher Mana Gain stark verbessert (+300 bis +1500 M.Atk), Magic Charge (Teleport), Wizard Enlightment (+20% M.Atk, +50% Crit)",
+                keyChangesTitan: "Fanatic (+30% Atk.Spd, +15% Crit), Heavy Armor Mastery (Crit-Schutz), Titanic Sweep (AoE)",
+                keyChangesSoultaker: "Witchcraft (+Paralyse/Fear/Sleep), Higher Mana Gain (+300 bis +1500 M.Atk), verbesserter Soul Guardian",
+                keyChangesStormScreamer: "Higher Mana Gain stark verbessert, Wind-basierte Magic Circle, Wizard Enlightment",
+                keyChangesEvasSaint: "Verbesserte Resurrektion (100% XP), Gift of Eva, Sacred Power (Restore Life-Upgrade)",
+                keyChangesShillienSaint: "Gift of Shillien, verbesserte Resurrektion, Witchcraft, Duress (10 Ziele)",
+                keyChangesPhoenixKnight: "Knight's Presence (Gruppen-Aura), Last Stand (Schaden für Gruppe aufnehmen), reduzierte Bow Resistance",
+                keyChangesHellKnight: "Dark Master, Knight's Presence, Fear-basierte Fähigkeiten, Help of Hatred",
+                keyChangesElementWeaver: "Higher Mana Gain Verbesserungen, Wizard Enlightment, veränderte Magic Circle",
+                keyChangesArchmage: "Fire Spiral Enchant-Verbesserungen, Faery Shield, Rappel, Magic Circle",
+                keyChangesCardinal: "Reduktion erlittenen Schadens um 10%, verbesserte Resurrektion, Balanced Body",
+                keyChangesEvasTemplar: "Received Critical Damage-Reduktion, Knight's Presence, Last Stand, Aqua Wave",
+                keyChangesShillienTemplar: "Toughness (Max HP +10/20/35%), Knight's Presence, Reduced Bow Resistance",
+                keyChangesDuelist: "Blade Spirit (P.Skill Critical Rate/Damage), Heavy Armor Mastery, reduzierte Bow Resistance",
+                keyChangesDreadnought: "Heavy Armor Mastery, Amazing Thunder Storm Mastery kann verzaubert werden",
+                keyChangesDoombringer: "Shattered Soul (neue passive Fähigkeit), reduzierte Soul-Collection-Cooldowns",
+                keyChangesGhostSentinel: "Bow Expert, reduzierte Storm Arrow Rain-Cooldowns, Quick Evasion/Charge",
+                keyChangesWindRider: "Shadow Step-Cooldown reduziert, verbesserte Ranges für Dark/Lethal Blow, Hidden Dagger enchantbar",
+                keyChangesGhostHunter: "Focus Power-Upgrades, Critical Wound-Dauer erhöht, Vital Point Attack Rate bis 100%",
+                keyChangesHierophant: "Mantle of Foresight (Gruppenaura), neue Perfect-Buffs, Enchanter's Barrier",
+                keyChangesSwordMuse: "Song of Havoc Aura, neue Song-Effekte, Blessing Barrier, Bard's Assault"
+            },
+            en: {
+                // Main title and UI elements
+                mainTitle: "Mimir Class Comparison",
+                categoryLabel: "Category:",
+                allCategories: "All Categories",
+                damageDealer: "Damage Dealers",
+                tanks: "Tanks",
+                healers: "Healers",
+                enchanters: "Enchanters",
+                sortLabel: "Sort by:",
+                overallRating: "Overall Rating",
+                dps: "DPS",
+                survival: "Survivability",
+                utility: "Group Utility",
+                mobility: "Mobility",
+                ease: "Ease of Play",
+                sortAscending: "Ascending",
+                sortDescending: "Descending",
+                showLabel: "Show:",
+                allClasses: "All Classes",
+                topClasses: "Top 5 Classes",
+                
+                // Table headers
+                classHeader: "Class",
+                categoryHeader: "Category",
+                dpsHeader: "DPS",
+                survivalHeader: "Survivability",
+                utilityHeader: "Group Utility",
+                mobilityHeader: "Mobility",
+                easeHeader: "Ease of Play",
+                overallHeader: "Overall Rating",
+                
+                // Recommendations
+                recommendationsTitle: "Top Recommendations",
+                rec1Title: "1. Mystic Muse (Wizard)",
+                strengthsLabel1: "Strengths:",
+                strengths1: "Excellent magical damage output, improved critical hit chance and damage, reduced casting times",
+                keyChangesLabel1: "Key Changes:",
+                changesList1: [
+                    "Greatly improved M.Atk bonuses (up to +1500) through Higher Mana Gain",
+                    "New skills like Magic Charge (mobility) and Wizard Enlightment (temporary buff)",
+                    "Wizard Enlightment provides +20% M.Atk, +30% Casting Speed, +50% Critical Rate for 20 seconds",
+                    "Reduced casting times for main damage skills like Prominence"
+                ],
+                
+                rec2Title: "2. Titan (Warrior)",
+                strengthsLabel2: "Strengths:",
+                strengths2: "Excellent balance between offense and defense, good survivability, solid damage output",
+                keyChangesLabel2: "Key Changes:",
+                changesList2: [
+                    "New passive skill \"Fanatic\" (+30% Atk.Spd, +15% P.Skill Critical Rate/Damage)",
+                    "Improved \"Heavy Armor Mastery\" with protection against critical hits",
+                    "New ability \"Titanic Sweep\" with up to 20 targets",
+                    "Improved AoE abilities and shock effects"
+                ],
+                
+                synergyTitle: "Why This Combination?",
+                synergyIntro: "The combination of Mystic Muse and Titan offers a perfect balance for nearly all game content:",
+                synergyList: [
+                    "Mystic Muse provides consistent, high magical damage from range",
+                    "Titan offers frontline presence with good survivability and crowd control",
+                    "Both classes have strong AoE abilities for groups of enemies",
+                    "Improved mobility through new skills on both classes",
+                    "Different damage types (magical/physical) provide versatility against different enemy types"
+                ],
+                
+                // Class-specific changes
+                keyChangesMysticMuse: "Higher Mana Gain greatly improved (+300 to +1500 M.Atk), Magic Charge (teleport), Wizard Enlightment (+20% M.Atk, +50% Crit)",
+                keyChangesTitan: "Fanatic (+30% Atk.Spd, +15% Crit), Heavy Armor Mastery (crit protection), Titanic Sweep (AoE)",
+                keyChangesSoultaker: "Witchcraft (+Paralysis/Fear/Sleep), Higher Mana Gain (+300 to +1500 M.Atk), improved Soul Guardian",
+                keyChangesStormScreamer: "Higher Mana Gain greatly improved, Wind-based Magic Circle, Wizard Enlightment",
+                keyChangesEvasSaint: "Improved Resurrection (100% XP), Gift of Eva, Sacred Power (Restore Life upgrade)",
+                keyChangesShillienSaint: "Gift of Shillien, improved Resurrection, Witchcraft, Duress (10 targets)",
+                keyChangesPhoenixKnight: "Knight's Presence (group aura), Last Stand (take damage for group), reduced Bow Resistance",
+                keyChangesHellKnight: "Dark Master, Knight's Presence, Fear-based abilities, Help of Hatred",
+                keyChangesElementWeaver: "Higher Mana Gain improvements, Wizard Enlightment, changed Magic Circle",
+                keyChangesArchmage: "Fire Spiral enchant improvements, Faery Shield, Rappel, Magic Circle",
+                keyChangesCardinal: "Reduction of received damage by 10%, improved Resurrection, Balanced Body",
+                keyChangesEvasTemplar: "Received Critical Damage reduction, Knight's Presence, Last Stand, Aqua Wave",
+                keyChangesShillienTemplar: "Toughness (Max HP +10/20/35%), Knight's Presence, Reduced Bow Resistance",
+                keyChangesDuelist: "Blade Spirit (P.Skill Critical Rate/Damage), Heavy Armor Mastery, reduced Bow Resistance",
+                keyChangesDreadnought: "Heavy Armor Mastery, Amazing Thunder Storm Mastery can be enchanted",
+                keyChangesDoombringer: "Shattered Soul (new passive ability), reduced Soul-Collection cooldowns",
+                keyChangesGhostSentinel: "Bow Expert, reduced Storm Arrow Rain cooldowns, Quick Evasion/Charge",
+                keyChangesWindRider: "Shadow Step cooldown reduced, improved ranges for Dark/Lethal Blow, Hidden Dagger enchantable",
+                keyChangesGhostHunter: "Focus Power upgrades, Critical Wound duration increased, Vital Point Attack Rate up to 100%",
+                keyChangesHierophant: "Mantle of Foresight (group aura), new Perfect buffs, Enchanter's Barrier",
+                keyChangesSwordMuse: "Song of Havoc Aura, new Song effects, Blessing Barrier, Bard's Assault"
+            },
+            es: {
+                // Título principal y elementos de UI
+                mainTitle: "Comparación de Clases de Mimir",
+                categoryLabel: "Categoría:",
+                allCategories: "Todas las Categorías",
+                damageDealer: "Daño",
+                tanks: "Tanques",
+                healers: "Sanadores",
+                enchanters: "Encantadores",
+                sortLabel: "Ordenar por:",
+                overallRating: "Valoración General",
+                dps: "DPS",
+                survival: "Supervivencia",
+                utility: "Utilidad de Grupo",
+                mobility: "Movilidad",
+                ease: "Facilidad de Juego",
+                sortAscending: "Ascendente",
+                sortDescending: "Descendente",
+                showLabel: "Mostrar:",
+                allClasses: "Todas las Clases",
+                topClasses: "Top 5 Clases",
+                
+                // Encabezados de tabla
+                classHeader: "Clase",
+                categoryHeader: "Categoría",
+                dpsHeader: "DPS",
+                survivalHeader: "Supervivencia",
+                utilityHeader: "Utilidad de Grupo",
+                mobilityHeader: "Movilidad",
+                easeHeader: "Facilidad de Juego",
+                overallHeader: "Valoración General",
+                
+                // Recomendaciones
+                recommendationsTitle: "Mejores Recomendaciones",
+                rec1Title: "1. Mystic Muse (Mago)",
+                strengthsLabel1: "Fortalezas:",
+                strengths1: "Excelente daño mágico, probabilidad de golpe crítico y daño mejorados, tiempos de lanzamiento reducidos",
+                keyChangesLabel1: "Cambios Clave:",
+                changesList1: [
+                    "Bonificaciones de M.Atk muy mejoradas (hasta +1500) a través de Higher Mana Gain",
+                    "Nuevas habilidades como Magic Charge (movilidad) y Wizard Enlightment (mejora temporal)",
+                    "Wizard Enlightment proporciona +20% M.Atk, +30% Velocidad de Lanzamiento, +50% Crítico durante 20 segundos",
+                    "Tiempos de lanzamiento reducidos para habilidades de daño principales como Prominence"
+                ],
+                
+                rec2Title: "2. Titan (Guerrero)",
+                strengthsLabel2: "Fortalezas:",
+                strengths2: "Excelente equilibrio entre ofensiva y defensiva, buena supervivencia, sólida producción de daño",
+                keyChangesLabel2: "Cambios Clave:",
+                changesList2: [
+                    "Nueva habilidad pasiva \"Fanatic\" (+30% Atk.Spd, +15% P.Skill Critical Rate/Damage)",
+                    "\"Heavy Armor Mastery\" mejorada con protección contra golpes críticos",
+                    "Nueva habilidad \"Titanic Sweep\" con hasta 20 objetivos",
+                    "Habilidades AoE y efectos de shock mejorados"
+                ],
+                
+                synergyTitle: "¿Por Qué Esta Combinación?",
+                synergyIntro: "La combinación de Mystic Muse y Titan ofrece un equilibrio perfecto para casi todo el contenido del juego:",
+                synergyList: [
+                    "Mystic Muse proporciona daño mágico alto y constante a distancia",
+                    "Titan ofrece presencia en primera línea con buena supervivencia y control de masas",
+                    "Ambas clases tienen fuertes habilidades AoE para grupos de enemigos",
+                    "Movilidad mejorada a través de nuevas habilidades en ambas clases",
+                    "Diferentes tipos de daño (mágico/físico) proporcionan versatilidad contra diferentes tipos de enemigos"
+                ],
+                
+                // Cambios específicos de clase
+                keyChangesMysticMuse: "Higher Mana Gain muy mejorado (+300 a +1500 M.Atk), Magic Charge (teletransporte), Wizard Enlightment (+20% M.Atk, +50% Crit)",
+                keyChangesTitan: "Fanatic (+30% Atk.Spd, +15% Crit), Heavy Armor Mastery (protección crítica), Titanic Sweep (AoE)",
+                keyChangesSoultaker: "Witchcraft (+Parálisis/Miedo/Sueño), Higher Mana Gain (+300 a +1500 M.Atk), Soul Guardian mejorado",
+                keyChangesStormScreamer: "Higher Mana Gain muy mejorado, Magic Circle basado en viento, Wizard Enlightment",
+                keyChangesEvasSaint: "Resurrección mejorada (100% XP), Gift of Eva, Sacred Power (mejora de Restore Life)",
+                keyChangesShillienSaint: "Gift of Shillien, Resurrección mejorada, Witchcraft, Duress (10 objetivos)",
+                keyChangesPhoenixKnight: "Knight's Presence (aura de grupo), Last Stand (recibir daño por el grupo), Resistencia a Arco reducida",
+                keyChangesHellKnight: "Dark Master, Knight's Presence, habilidades basadas en Miedo, Help of Hatred",
+                keyChangesElementWeaver: "Mejoras de Higher Mana Gain, Wizard Enlightment, Magic Circle cambiado",
+                keyChangesArchmage: "Mejoras de encantamiento de Fire Spiral, Faery Shield, Rappel, Magic Circle",
+                keyChangesCardinal: "Reducción del daño recibido en un 10%, Resurrección mejorada, Balanced Body",
+                keyChangesEvasTemplar: "Reducción de Daño Crítico recibido, Knight's Presence, Last Stand, Aqua Wave",
+                keyChangesShillienTemplar: "Toughness (Max HP +10/20/35%), Knight's Presence, Resistencia a Arco reducida",
+                keyChangesDuelist: "Blade Spirit (P.Skill Critical Rate/Damage), Heavy Armor Mastery, Resistencia a Arco reducida",
+                keyChangesDreadnought: "Heavy Armor Mastery, Amazing Thunder Storm Mastery puede ser encantada",
+                keyChangesDoombringer: "Shattered Soul (nueva habilidad pasiva), tiempos de reutilización de Soul-Collection reducidos",
+                keyChangesGhostSentinel: "Bow Expert, tiempos de reutilización de Storm Arrow Rain reducidos, Quick Evasion/Charge",
+                keyChangesWindRider: "Tiempo de reutilización de Shadow Step reducido, rangos mejorados para Dark/Lethal Blow, Hidden Dagger encantable",
+                keyChangesGhostHunter: "Mejoras de Focus Power, duración de Critical Wound aumentada, Vital Point Attack Rate hasta 100%",
+                keyChangesHierophant: "Mantle of Foresight (aura de grupo), nuevos buffs Perfect, Enchanter's Barrier",
+                keyChangesSwordMuse: "Song of Havoc Aura, nuevos efectos de Song, Blessing Barrier, Bard's Assault"
+            }
+        };
+
+        // Klassendaten basierend auf den Änderungen
+        const classData = [
+            {
+                name: "Mystic Muse",
+                category: "Damage Dealers",
+                dps: 9.5,
+                survival: 6.5,
+                utility: 7.5,
+                mobility: 8,
+                ease: 7.5,
+                keyChanges: {
+                    de: "Higher Mana Gain stark verbessert (+300 bis +1500 M.Atk), Magic Charge (Teleport), Wizard Enlightment (+20% M.Atk, +50% Crit)",
+                    en: "Higher Mana Gain greatly improved (+300 to +1500 M.Atk), Magic Charge (teleport), Wizard Enlightment (+20% M.Atk, +50% Crit)",
+                    es: "Higher Mana Gain muy mejorado (+300 a +1500 M.Atk), Magic Charge (teletransporte), Wizard Enlightment (+20% M.Atk, +50% Crit)"
+                },
+                isTop: true
+            },
+            {
+                name: "Titan",
+                category: "Tanks",
+                dps: 8,
+                survival: 9,
+                utility: 7,
+                mobility: 6.5,
+                ease: 8,
+                keyChanges: {
+                    de: "Fanatic (+30% Atk.Spd, +15% Crit), Heavy Armor Mastery (Crit-Schutz), Titanic Sweep (AoE)",
+                    en: "Fanatic (+30% Atk.Spd, +15% Crit), Heavy Armor Mastery (crit protection), Titanic Sweep (AoE)",
+                    es: "Fanatic (+30% Atk.Spd, +15% Crit), Heavy Armor Mastery (protección crítica), Titanic Sweep (AoE)"
+                },
+                isTop: true
+            },
+            {
+                name: "Soultaker",
+                category: "Damage Dealers",
+                dps: 9,
+                survival: 7,
+                utility: 8,
+                mobility: 7,
+                ease: 7,
+                keyChanges: {
+                    de: "Witchcraft (+Paralyse/Fear/Sleep), Higher Mana Gain (+300 bis +1500 M.Atk), verbesserter Soul Guardian",
+                    en: "Witchcraft (+Paralysis/Fear/Sleep), Higher Mana Gain (+300 to +1500 M.Atk), improved Soul Guardian",
+                    es: "Witchcraft (+Parálisis/Miedo/Sueño), Higher Mana Gain (+300 a +1500 M.Atk), Soul Guardian mejorado"
+                },
+                isTop: true
+            },
+            {
+                name: "Storm Screamer",
+                category: "Damage Dealers",
+                dps: 9,
+                survival: 6.5,
+                utility: 7,
+                mobility: 8,
+                ease: 7,
+                keyChanges: {
+                    de: "Higher Mana Gain stark verbessert, Wind-basierte Magic Circle, Wizard Enlightment",
+                    en: "Higher Mana Gain greatly improved, Wind-based Magic Circle, Wizard Enlightment",
+                    es: "Higher Mana Gain muy mejorado, Magic Circle basado en viento, Wizard Enlightment"
+                },
+                isTop: true
+            },
+            {
+                name: "Eva's Saint",
+                category: "Healers",
+                dps: 6,
+                survival: 8,
+                utility: 9.5,
+                mobility: 6,
+                ease: 8,
+                keyChanges: {
+                    de: "Verbesserte Resurrektion (100% XP), Gift of Eva, Sacred Power (Restore Life-Upgrade)",
+                    en: "Improved Resurrection (100% XP), Gift of Eva, Sacred Power (Restore Life upgrade)",
+                    es: "Resurrección mejorada (100% XP), Gift of Eva, Sacred Power (mejora de Restore Life)"
+                },
+                isTop: true
+            },
+            {
+                name: "Shillien Saint",
+                category: "Healers",
+                dps: 6.5,
+                survival: 7.5,
+                utility: 9,
+                mobility: 6,
+                ease: 7.5,
+                keyChanges: {
+                    de: "Gift of Shillien, verbesserte Resurrektion, Witchcraft, Duress (10 Ziele)",
+                    en: "Gift of Shillien, improved Resurrection, Witchcraft, Duress (10 targets)",
+                    es: "Gift of Shillien, Resurrección mejorada, Witchcraft, Duress (10 objetivos)"
+                },
+                isTop: false
+            },
+            {
+                name: "Phoenix Knight",
+                category: "Tanks",
+                dps: 7.5,
+                survival: 9.5,
+                utility: 8,
+                mobility: 6,
+                ease: 7,
+                keyChanges: {
+                    de: "Knight's Presence (Gruppen-Aura), Last Stand (Schaden für Gruppe aufnehmen), reduzierte Bow Resistance",
+                    en: "Knight's Presence (group aura), Last Stand (take damage for group), reduced Bow Resistance",
+                    es: "Knight's Presence (aura de grupo), Last Stand (recibir daño por el grupo), Resistencia a Arco reducida"
+                },
+                isTop: false
+            },
+            {
+                name: "Hell Knight",
+                category: "Tanks",
+                dps: 8,
+                survival: 9,
+                utility: 7.5,
+                mobility: 6.5,
+                ease: 7,
+                keyChanges: {
+                    de: "Dark Master, Knight's Presence, Fear-basierte Fähigkeiten, Help of Hatred",
+                    en: "Dark Master, Knight's Presence, Fear-based abilities, Help of Hatred",
+                    es: "Dark Master, Knight's Presence, habilidades basadas en Miedo, Help of Hatred"
+                },
+                isTop: false
+            },
+            {
+                name: "Element Weaver",
+                category: "Damage Dealers",
+                dps: 8.5,
+                survival: 6,
+                utility: 7,
+                mobility: 7,
+                ease: 7.5,
+                keyChanges: {
+                    de: "Higher Mana Gain Verbesserungen, Wizard Enlightment, veränderte Magic Circle",
+                    en: "Higher Mana Gain improvements, Wizard Enlightment, changed Magic Circle",
+                    es: "Mejoras de Higher Mana Gain, Wizard Enlightment, Magic Circle cambiado"
+                },
+                isTop: false
+            },
+            {
+                name: "Archmage",
+                category: "Damage Dealers",
+                dps: 8.5,
+                survival: 6,
+                utility: 7.5,
+                mobility: 7,
+                ease: 7,
+                keyChanges: {
+                    de: "Fire Spiral Enchant-Verbesserungen, Faery Shield, Rappel, Magic Circle",
+                    en: "Fire Spiral enchant improvements, Faery Shield, Rappel, Magic Circle",
+                    es: "Mejoras de encantamiento de Fire Spiral, Faery Shield, Rappel, Magic Circle"
+                },
+                isTop: false
+            },
+            {
+                name: "Cardinal",
+                category: "Healers",
+                dps: 5,
+                survival: 8,
+                utility: 9,
+                mobility: 5,
+                ease: 8.5,
+                keyChanges: {
+                    de: "Reduktion erlittenen Schadens um 10%, verbesserte Resurrektion, Balanced Body",
+                    en: "Reduction of received damage by 10%, improved Resurrection, Balanced Body",
+                    es: "Reducción del daño recibido en un 10%, Resurrección mejorada, Balanced Body"
+                },
+                isTop: false
+            },
+            {
+                name: "Eva's Templar",
+                category: "Tanks",
+                dps: 7,
+                survival: 9,
+                utility: 8,
+                mobility: 6,
+                ease: 7.5,
+                keyChanges: {
+                    de: "Received Critical Damage-Reduktion, Knight's Presence, Last Stand, Aqua Wave",
+                    en: "Received Critical Damage reduction, Knight's Presence, Last Stand, Aqua Wave",
+                    es: "Reducción de Daño Crítico recibido, Knight's Presence, Last Stand, Aqua Wave"
+                },
+                isTop: false
+            },
+            {
+                name: "Shillien Templar",
+                category: "Tanks",
+                dps: 7.5,
+                survival: 8.5,
+                utility: 7.5,
+                mobility: 6.5,
+                ease: 7,
+                keyChanges: {
+                    de: "Toughness (Max HP +10/20/35%), Knight's Presence, Reduced Bow Resistance",
+                    en: "Toughness (Max HP +10/20/35%), Knight's Presence, Reduced Bow Resistance",
+                    es: "Toughness (Max HP +10/20/35%), Knight's Presence, Resistencia a Arco reducida"
+                },
+                isTop: false
+            },
+            {
+                name: "Duelist",
+                category: "Damage Dealers",
+                dps: 8.5,
+                survival: 7,
+                utility: 6,
+                mobility: 7.5,
+                ease: 8,
+                keyChanges: {
+                    de: "Blade Spirit (P.Skill Critical Rate/Damage), Heavy Armor Mastery, reduzierte Bow Resistance",
+                    en: "Blade Spirit (P.Skill Critical Rate/Damage), Heavy Armor Mastery, reduced Bow Resistance",
+                    es: "Blade Spirit (P.Skill Critical Rate/Damage), Heavy Armor Mastery, Resistencia a Arco reducida"
+                },
+                isTop: false
+            },
+            {
+                name: "Dreadnought",
+                category: "Damage Dealers",
+                dps: 8,
+                survival: 7.5,
+                utility: 6.5,
+                mobility: 6,
+                ease: 7.5,
+                keyChanges: {
+                    de: "Heavy Armor Mastery, Amazing Thunder Storm Mastery kann verzaubert werden",
+                    en: "Heavy Armor Mastery, Amazing Thunder Storm Mastery can be enchanted",
+                    es: "Heavy Armor Mastery, Amazing Thunder Storm Mastery puede ser encantada"
+                },
+                isTop: false
+            },
+            {
+                name: "Doombringer",
+                category: "Damage Dealers",
+                dps: 8.5,
+                survival: 7,
+                utility: 6.5,
+                mobility: 7,
+                ease: 7,
+                keyChanges: {
+                    de: "Shattered Soul (neue passive Fähigkeit), reduzierte Soul-Collection-Cooldowns",
+                    en: "Shattered Soul (new passive ability), reduced Soul-Collection cooldowns",
+                    es: "Shattered Soul (nueva habilidad pasiva), tiempos de reutilización de Soul-Collection reducidos"
+                },
+                isTop: false
+            },
+            {
+                name: "Ghost Sentinel",
+                category: "Damage Dealers",
+                dps: 9,
+                survival: 6,
+                utility: 7,
+                mobility: 8,
+                ease: 7.5,
+                keyChanges: {
+                    de: "Bow Expert, reduzierte Storm Arrow Rain-Cooldowns, Quick Evasion/Charge",
+                    en: "Bow Expert, reduced Storm Arrow Rain cooldowns, Quick Evasion/Charge",
+                    es: "Bow Expert, tiempos de reutilización de Storm Arrow Rain reducidos, Quick Evasion/Charge"
+                },
+                isTop: false
+            },
+            {
+                name: "Wind Rider",
+                category: "Damage Dealers",
+                dps: 8.5,
+                survival: 6.5,
+                utility: 6.5,
+                mobility: 9,
+                ease: 7,
+                keyChanges: {
+                    de: "Shadow Step-Cooldown reduziert, verbesserte Ranges für Dark/Lethal Blow, Hidden Dagger enchantbar",
+                    en: "Shadow Step cooldown reduced, improved ranges for Dark/Lethal Blow, Hidden Dagger enchantable",
+                    es: "Tiempo de reutilización de Shadow Step reducido, rangos mejorados para Dark/Lethal Blow, Hidden Dagger encantable"
+                },
+                isTop: false
+            },
+            {
+                name: "Ghost Hunter",
+                category: "Damage Dealers",
+                dps: 8.5,
+                survival: 6.5,
+                utility: 6.5,
+                mobility: 9,
+                ease: 7,
+                keyChanges: {
+                    de: "Focus Power-Upgrades, Critical Wound-Dauer erhöht, Vital Point Attack Rate bis 100%",
+                    en: "Focus Power upgrades, Critical Wound duration increased, Vital Point Attack Rate up to 100%",
+                    es: "Mejoras de Focus Power, duración de Critical Wound aumentada, Vital Point Attack Rate hasta 100%"
+                },
+                isTop: false
+            },
+            {
+                name: "Hierophant",
+                category: "Enchanters",
+                dps: 7,
+                survival: 7.5,
+                utility: 9,
+                mobility: 6,
+                ease: 7,
+                keyChanges: {
+                    de: "Mantle of Foresight (Gruppenaura), neue Perfect-Buffs, Enchanter's Barrier",
+                    en: "Mantle of Foresight (group aura), new Perfect buffs, Enchanter's Barrier",
+                    es: "Mantle of Foresight (aura de grupo), nuevos buffs Perfect, Enchanter's Barrier"
+                },
+                isTop: false
+            },
+            {
+                name: "Sword Muse",
+                category: "Enchanters",
+                dps: 7.5,
+                survival: 7,
+                utility: 9,
+                mobility: 7,
+                ease: 7.5,
+                keyChanges: {
+                    de: "Song of Havoc Aura, neue Song-Effekte, Blessing Barrier, Bard's Assault",
+                    en: "Song of Havoc Aura, new Song effects, Blessing Barrier, Bard's Assault",
+                    es: "Song of Havoc Aura, nuevos efectos de Song, Blessing Barrier, Bard's Assault"
+                },
+                isTop: false
+            }
+        ];
+
+        // Berechnung der Gesamtbewertung für jede Klasse
+        classData.forEach(cls => {
+            cls.overall = ((cls.dps * 1.2) + cls.survival + (cls.utility * 1.1) + cls.mobility + cls.ease) / 5;
+        });
+
+        // Tabellenerstellung und Logik
+        document.addEventListener('DOMContentLoaded', function() {
+            const table = document.getElementById('class-table');
+            const tbody = table.querySelector('tbody');
+            const categoryFilter = document.getElementById('category-filter');
+            const sortBySelect = document.getElementById('sort-by');
+            const sortOrderBtn = document.getElementById('sort-order');
+            const showTopSelect = document.getElementById('show-top');
+            const languageBtns = document.querySelectorAll('.language-btn');
+            
+            let sortAscending = false;
+            let currentSortBy = 'overall';
+            let currentLanguage = 'de';
+            
+            // Initialer Tabellen-Render und Spracheinstellung
+            setLanguage('de');
+            renderTable();
+            
+            // Event Listeners für Sprachauswahl
+            languageBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const lang = this.getAttribute('data-lang');
+                    languageBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    setLanguage(lang);
+                    renderTable();
+                });
+            });
+            
+            // Event Listeners für Filterung und Sortierung
+            categoryFilter.addEventListener('change', renderTable);
+            sortBySelect.addEventListener('change', function() {
+                currentSortBy = this.value;
+                renderTable();
+            });
+            
+            sortOrderBtn.addEventListener('click', function() {
+                sortAscending = !sortAscending;
+                this.textContent = translations[currentLanguage][sortAscending ? 'sortAscending' : 'sortDescending'];
+                renderTable();
+            });
+            
+            showTopSelect.addEventListener('change', renderTable);
+            
+            // Table Header Click für Sortierung
+            const headers = table.querySelectorAll('th');
+            headers.forEach(header => {
+                header.addEventListener('click', function() {
+                    const sortBy = this.getAttribute('data-sort');
+                    if (currentSortBy === sortBy) {
+                        sortAscending = !sortAscending;
+                        sortOrderBtn.textContent = translations[currentLanguage][sortAscending ? 'sortAscending' : 'sortDescending'];
+                    } else {
+                        currentSortBy = sortBy;
+                        sortBySelect.value = sortBy;
+                    }
+                    renderTable();
+                });
+            });
+            
+            // Funktion zum Aktualisieren der UI-Sprache
+            function setLanguage(lang) {
+                currentLanguage = lang;
+                document.documentElement.lang = lang;
+                
+                // Titel und Steuerelemente
+                document.getElementById('main-title').textContent = translations[lang].mainTitle;
+                document.getElementById('category-label').textContent = translations[lang].categoryLabel;
+                document.getElementById('all-categories').textContent = translations[lang].allCategories;
+                document.getElementById('damage-dealers').textContent = translations[lang].damageDealer;
+                document.getElementById('tanks').textContent = translations[lang].tanks;
+                document.getElementById('healers').textContent = translations[lang].healers;
+                document.getElementById('enchanters').textContent = translations[lang].enchanters;
+                
+                document.getElementById('sort-label').textContent = translations[lang].sortLabel;
+                document.getElementById('overall-rating').textContent = translations[lang].overallRating;
+                document.getElementById('dps').textContent = translations[lang].dps;
+                document.getElementById('survival').textContent = translations[lang].survival;
+                document.getElementById('utility').textContent = translations[lang].utility;
+                document.getElementById('mobility').textContent = translations[lang].mobility;
+                document.getElementById('ease').textContent = translations[lang].ease;
+                
+                document.getElementById('sort-order').textContent = translations[lang][sortAscending ? 'sortAscending' : 'sortDescending'];
+                
+                document.getElementById('show-label').textContent = translations[lang].showLabel;
+                document.getElementById('all-classes').textContent = translations[lang].allClasses;
+                document.getElementById('top-classes').textContent = translations[lang].topClasses;
+                
+                // Tabellenkopf
+                document.getElementById('class-header').textContent = translations[lang].classHeader;
+                document.getElementById('category-header').textContent = translations[lang].categoryHeader;
+                document.getElementById('dps-header').textContent = translations[lang].dpsHeader;
+                document.getElementById('survival-header').textContent = translations[lang].survivalHeader;
+                document.getElementById('utility-header').textContent = translations[lang].utilityHeader;
+                document.getElementById('mobility-header').textContent = translations[lang].mobilityHeader;
+                document.getElementById('ease-header').textContent = translations[lang].easeHeader;
+                document.getElementById('overall-header').textContent = translations[lang].overallHeader;
+                
+                // Empfehlungen
+                document.getElementById('recommendations-title').textContent = translations[lang].recommendationsTitle;
+                document.getElementById('rec1-title').textContent = translations[lang].rec1Title;
+                document.getElementById('strengths-label1').textContent = translations[lang].strengthsLabel1;
+                document.getElementById('strengths1').textContent = translations[lang].strengths1;
+                document.getElementById('key-changes-label1').textContent = translations[lang].keyChangesLabel1;
+                
+                const changesList1 = document.getElementById('changes-list1');
+                changesList1.innerHTML = '';
+                translations[lang].changesList1.forEach(change => {
+                    const li = document.createElement('li');
+                    li.textContent = change;
+                    changesList1.appendChild(li);
+                });
+                
+                document.getElementById('rec2-title').textContent = translations[lang].rec2Title;
+                document.getElementById('strengths-label2').textContent = translations[lang].strengthsLabel2;
+                document.getElementById('strengths2').textContent = translations[lang].strengths2;
+                document.getElementById('key-changes-label2').textContent = translations[lang].keyChangesLabel2;
+                
+                const changesList2 = document.getElementById('changes-list2');
+                changesList2.innerHTML = '';
+                translations[lang].changesList2.forEach(change => {
+                    const li = document.createElement('li');
+                    li.textContent = change;
+                    changesList2.appendChild(li);
+                });
+                
+                document.getElementById('synergy-title').textContent = translations[lang].synergyTitle;
+                document.getElementById('synergy-intro').textContent = translations[lang].synergyIntro;
+                
+                const synergyList = document.getElementById('synergy-list');
+                synergyList.innerHTML = '';
+                translations[lang].synergyList.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    synergyList.appendChild(li);
+                });
+            }
+            
+            // Funktion zum Rendern der Tabelle
+            function renderTable() {
+                tbody.innerHTML = '';
+                
+                // Filtern
+                let filteredData = [...classData];
+                
+                if (categoryFilter.value !== 'all') {
+                    filteredData = filteredData.filter(cls => cls.category === categoryFilter.value);
+                }
+                
+                if (showTopSelect.value === 'top') {
+                    filteredData = filteredData.filter(cls => cls.isTop);
+                }
+                
+                // Sortieren
+                filteredData.sort((a, b) => {
+                    let valueA = a[currentSortBy];
+                    let valueB = b[currentSortBy];
+                    
+                    if (typeof valueA === 'string') {
+                        return sortAscending ? 
+                            valueA.localeCompare(valueB) : 
+                            valueB.localeCompare(valueA);
+                    } else {
+                        return sortAscending ? valueA - valueB : valueB - valueA;
+                    }
+                });
+                
+                // Rendern
+                filteredData.forEach(cls => {
+                    const row = document.createElement('tr');
+                    if (cls.isTop) row.classList.add('top-class');
+                    
+                    row.innerHTML = `
+                        <td>
+                            ${cls.name}
+                            <div class="key-changes">${cls.keyChanges[currentLanguage]}</div>
+                        </td>
+                        <td class="category">${cls.category}</td>
+                        <td>${renderRatingBar(cls.dps)}</td>
+                        <td>${renderRatingBar(cls.survival)}</td>
+                        <td>${renderRatingBar(cls.utility)}</td>
+                        <td>${renderRatingBar(cls.mobility)}</td>
+                        <td>${renderRatingBar(cls.ease)}</td>
+                        <td>${renderRatingBar(cls.overall.toFixed(1))}</td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+            }
+            
+            // Hilfsfunktion zum Rendern der Bewertungsbalken
+            function renderRatingBar(rating) {
+                let width = rating * 10;
+                let ratingClass = 'weak';
+                
+                if (rating >= 9) {
+                    ratingClass = 'very-strong';
+                } else if (rating >= 7.5) {
+                    ratingClass = 'strong';
+                } else if (rating >= 6) {
+                    ratingClass = 'medium';
+                }
+                
+                return `
+                    <div class="rating">
+                        <div class="rating-bar ${ratingClass}" style="width: ${width}px;"></div>
+                        <span>${rating}</span>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
